@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="width: 800px; margin: 0 auto">
+        <ol>
+            {% for obj in objects %}
+                <li><b>main url:</b> {{ obj.url }}</li><br>
+                <p><b>shortened url:</b> <a href="{{ request.get_host }}/{{ obj.shortcode }}">{{ request.get_host }}/{{ obj.shortcode }}</a></p>
+            {% endfor %}
+        </ol>
+        <a href="/"> +New</a>
+    </div>
+{% endblock content %}
+
+

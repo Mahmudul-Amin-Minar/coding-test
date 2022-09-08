@@ -1,14 +1,18 @@
 from statistics import mode
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 
 from .utils import create_shortcode
 from .validators import validate_url
 
 # Create your models here.
 
+User = get_user_model()
+
 class ShortenUrl(models.Model):
     url = models.TextField(validators=[validate_url])
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     shortcode = models.CharField(max_length=15, unique=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
     timestamp = models.DateTimeField(auto_now_add=True)

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, Http404
 from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import UrlForm
 from .models import ShortenUrl
@@ -34,6 +35,13 @@ class HomePage(View):
             else:
                 s = 'http://' + s
             obj, created = ShortenUrl.objects.get_or_create(url=s)
+            # obj.user = self.request.user or None
+            # obj.save()
+            try:
+                obj.user = self.request.user
+                obj.save()
+            except:
+                pass
             context = {
                 'object': obj,
                 'created': created
@@ -54,3 +62,14 @@ class ShortenURLView(View):
             return HttpResponseRedirect(obj.url)
         else:
             raise Http404
+
+class UrlListView(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        print(request.user.id)
+        qs = ShortenUrl.objects.filter(user=request.user)
+        context = {
+            "title": "Shortened URL List",
+            "objects": qs
+        }
+        return render(request, "shortener/list.html", context)
