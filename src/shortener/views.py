@@ -1,9 +1,12 @@
+import datetime
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, Http404
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .forms import UrlForm
+from urlshortener.settings import VALIDITY
+
+from .forms import UrlForm, UrlFormLoggedUsers
 from .models import ShortenUrl
 
 # Create your views here.
@@ -11,7 +14,10 @@ from .models import ShortenUrl
 class HomePage(View):
     
     def get(self, request, *args, **kwargs):
-        form = UrlForm()
+        if request.user.is_authenticated:
+            form = UrlFormLoggedUsers()
+        else:
+            form = UrlForm()
         context = {
             "title": "Submit Url",
             "form": form
@@ -19,7 +25,10 @@ class HomePage(View):
         return render(request, "shortener/home.html", context)
 
     def post(self, request, *args, **kwargs):
-        form = UrlForm(request.POST)
+        if request.user.is_authenticated:
+            form = UrlFormLoggedUsers(request.POST)
+        else:
+            form = UrlForm(request.POST)
         context = {
             'title': 'Submit Url',
             'form': form
@@ -28,15 +37,17 @@ class HomePage(View):
 
         if form.is_valid():
             new_url = form.cleaned_data.get('url')
+            custom_shortcode = form.cleaned_data.get('shortcode') or ""
+            validity = form.cleaned_data.get('valid_for') or VALIDITY
+
             s = new_url
             s = s.replace('www.', '')
             if 'http://' in s or 'https://' in s:
                 s = s
             else:
                 s = 'http://' + s
-            obj, created = ShortenUrl.objects.get_or_create(url=s)
-            # obj.user = self.request.user or None
-            # obj.save()
+            obj, created = ShortenUrl.objects.get_or_create(url=s, shortcode=custom_shortcode, validity=validity)
+            print(obj.shortcode)
             try:
                 obj.user = self.request.user
                 obj.save()
@@ -66,8 +77,12 @@ class ShortenURLView(View):
 class UrlListView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
-        print(request.user.id)
         qs = ShortenUrl.objects.filter(user=request.user)
+        for q in qs:
+            td = datetime.datetime.now(datetime.timezone.utc) - q.timestamp
+            print(td.days)
+            if td.days > q.validity:
+                q.active = False
         context = {
             "title": "Shortened URL List",
             "objects": qs

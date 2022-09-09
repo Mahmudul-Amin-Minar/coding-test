@@ -33,7 +33,7 @@
 </head>
 <body>
     <ul class="navbar">
-        <li><a class="active" href="#home">Home</a></li>
+        <li><a class="active" href="{% url 'home' %}">Home</a></li>
         {% if user.is_authenticated %}
             <li><a href="{% url 'list' %}">Hello {{ user.username }}</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>

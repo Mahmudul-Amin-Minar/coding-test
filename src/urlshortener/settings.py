@@ -38,8 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # 3rd party
+    'rest_framework',
+    'rest_framework.authtoken',
+
     'shortener',
     'accounts',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +134,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SHORTCODE_MAX = 15
 SHORTCODE_MIN = 6
+VALIDITY = 3
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}

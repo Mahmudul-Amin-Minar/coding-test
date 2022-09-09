@@ -3,6 +3,8 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 
+from urlshortener.settings import VALIDITY
+
 from .utils import create_shortcode
 from .validators import validate_url
 
@@ -16,6 +18,7 @@ class ShortenUrl(models.Model):
     shortcode = models.CharField(max_length=15, unique=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    validity = models.IntegerField(default=VALIDITY, blank=True)
     active = models.BooleanField(default=True)
 
     def __str__(self) -> str:
