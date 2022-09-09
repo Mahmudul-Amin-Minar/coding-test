@@ -6,7 +6,8 @@
         <ol>
             {% for obj in objects %}
                 <li><b>main url:</b> {{ obj.url }}</li><br>
-                <p><b>shortened url:</b> <a href="{{ request.get_host }}/{{ obj.shortcode }}">{{ request.get_host }}/{{ obj.shortcode }}</a> || {{ obj.active }}</p>
+                <p><b>shortened url:</b> <a href="{{ request.get_host }}/{{ obj.shortcode }}">{{ request.get_host }}/{{ obj.shortcode }}</a></p>
+                <p>Active Status: {{ obj.active }}</p>
             {% endfor %}
         </ol>
         <a href="/"> +New</a>
