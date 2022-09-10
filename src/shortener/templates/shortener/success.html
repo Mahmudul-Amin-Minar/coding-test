@@ -4,7 +4,7 @@
     <div style="width: 800px; margin: 0 auto">
         <h1>Successfully Created</h1>
         <p>{{ object.url }}</p>
-        <a href="{{ object.get_short_url }}"><p>{{ object.get_short_url }}</p></a>
+        <a href="{{ object.get_short_url }}"><p>{{ request.get_host }}{{ object.get_short_url }}</p></a>
         <a href="/"> +New</a>
     </div>
 {% endblock content %}

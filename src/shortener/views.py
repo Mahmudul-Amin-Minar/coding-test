@@ -47,7 +47,6 @@ class HomePage(View):
             else:
                 s = 'http://' + s
             obj, created = ShortenUrl.objects.get_or_create(url=s, shortcode=custom_shortcode, validity=validity)
-            print(obj.shortcode)
             try:
                 obj.user = self.request.user
                 obj.save()
@@ -80,7 +79,6 @@ class UrlListView(LoginRequiredMixin, View):
         qs = ShortenUrl.objects.filter(user=request.user)
         for q in qs:
             td = datetime.datetime.now(datetime.timezone.utc) - q.timestamp
-            print(td.days)
             if td.days > q.validity:
                 q.active = False
         context = {

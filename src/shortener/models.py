@@ -32,4 +32,4 @@ class ShortenUrl(models.Model):
 
     def get_short_url(self):
         url_path = reverse('scode', kwargs={'shortcode': self.shortcode})
-        return "http://127.0.0.1:8000" + url_path
+        return  url_path
